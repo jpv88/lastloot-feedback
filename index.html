@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Last Loot · Tu opinión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800;900&display=swap">
+<style>
+/* Una sola estampa, la del juego: mar azul marino, tarjetas crema con borde grueso, botones sol. */
+:root {
+  --sea: #15325a;
+  --sea-deep: #0f2442;
+  --cream: #fff6df;
+  --ink: #1d2b4f;
+  --ink-soft: #55607a;
+  --sun: #ffc93c;
+  --coral: #ff5a5f;
+  --line: #1d2b4f;
+  --display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --body: "Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { background: var(--sea-deep); }
+body { margin: 0; }
+[hidden] { display: none !important; }
+body {
+  background: radial-gradient(120% 60% at 50% 0%, var(--sea) 0%, var(--sea-deep) 70%) var(--sea-deep);
+  color: var(--cream);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.45;
+  min-height: 100%;
+  padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+header { text-align: center; display: flex; flex-direction: column; gap: 6px; padding-bottom: 6px; }
+.brand { font-family: var(--display); font-size: 40px; line-height: 1; letter-spacing: 0.5px; color: var(--sun);
+  text-shadow: 0 3px 0 var(--ink); }
+.sub { font-weight: 800; font-size: 15px; opacity: 0.9; }
+.meta { font-size: 13px; opacity: 0.7; }
+
+.card {
+  min-width: 0;
+  background: var(--cream); color: var(--ink);
+  border: 3px solid var(--line); border-radius: 18px;
+  box-shadow: 0 4px 0 var(--line);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.q { font-family: var(--display); font-size: 20px; line-height: 1.15; text-wrap: balance; margin: 0; font-weight: 400; }
+.hint { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin: -4px 0 0; }
+
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.scale input, .choices input { position: absolute; opacity: 0; pointer-events: none; }
+.scale label, .choices label {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 52px; border: 3px solid var(--line); border-radius: 14px;
+  background: #fff; font-family: var(--display); font-size: 22px; color: var(--ink);
+  box-shadow: 0 3px 0 var(--line); cursor: pointer; user-select: none;
+  transition: transform 80ms ease-out, box-shadow 80ms ease-out, background 80ms;
+}
+.scale label:active, .choices label:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.scale input:checked + label, .choices input:checked + label { background: var(--sun); transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
+.scale input:focus-visible + label, .choices input:focus-visible + label { outline: 3px solid var(--coral); outline-offset: 2px; }
+.ends { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; font-weight: 800; color: var(--ink-soft); }
+.ends span:last-child { text-align: right; }
+
+.choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.choices.islands { grid-template-columns: repeat(4, 1fr); }
+.choices label { font-family: var(--body); font-weight: 900; font-size: 15px; padding: 6px; text-align: center; line-height: 1.15; }
+
+textarea, input[type="text"] {
+  width: 100%; border: 3px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink);
+  font: 700 16px/1.4 var(--body); padding: 10px 12px; resize: vertical;
+}
+textarea { min-height: 72px; }
+textarea:focus-visible, input[type="text"]:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+.optional { font-family: var(--body); font-size: 13px; font-weight: 800; color: var(--ink-soft); }
+
+.send {
+  font-family: var(--display); font-size: 24px; color: var(--ink);
+  background: var(--sun); border: 3px solid var(--line); border-radius: 16px;
+  box-shadow: 0 4px 0 var(--line); min-height: 60px; cursor: pointer; width: 100%;
+}
+.send:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.send:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+.ghost {
+  font: 900 15px var(--body); color: var(--ink); background: #fff; border: 3px solid var(--line);
+  border-radius: 14px; min-height: 48px; padding: 0 16px; cursor: pointer; box-shadow: 0 3px 0 var(--line);
+}
+.error { background: var(--coral); color: #fff; font-weight: 900; border-radius: 12px; padding: 10px 12px; border: 3px solid var(--line); }
+.missing { border-color: var(--coral); box-shadow: 0 4px 0 var(--coral); }
+
+.thanks { text-align: center; align-items: center; }
+.thanks .q { font-size: 28px; }
+.summary { width: 100%; text-align: left; white-space: pre-wrap; font: 700 14px/1.45 var(--body);
+  background: #fff; border: 2px dashed var(--ink-soft); border-radius: 12px; padding: 12px; margin: 0; }
+.status { font-size: 14px; font-weight: 800; color: var(--ink-soft); }
+
+.owner h2 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0; }
+.resp { border-top: 2px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.resp:first-of-type { border-top: 0; padding-top: 0; }
+.resp b { font-family: var(--display); font-weight: 400; font-size: 17px; }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { background: var(--sun); border: 2px solid var(--line); border-radius: 999px; padding: 1px 9px; font-weight: 900; font-size: 13px; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">Last Loot</div>
+    <div class="sub">¿Qué te ha parecido? Cuéntamelo en 5 minutos</div>
+    <div class="meta">Versión de prueba 1.0 (1) · TestFlight</div>
+  </header>
+
+  <form id="form" novalidate>
+    <div class="wrap">
+      <div class="card">
+        <label class="q" for="name">¿Cómo te llamas?</label>
+        <input type="text" id="name" name="name" autocomplete="given-name" placeholder="Tu nombre" maxlength="40">
+      </div>
+      <div id="questions" class="wrap"></div>
+
+      <div class="card">
+        <label class="q" for="best">Lo que más te gustó</label>
+        <textarea id="best" name="best" maxlength="500" placeholder="Una frase basta"></textarea>
+      </div>
+      <div class="card">
+        <label class="q" for="change">Lo que cambiarías, o algo raro que viste</label>
+        <p class="hint">Un fallo, algo que no entendiste, algo que se hizo pesado…</p>
+        <textarea id="change" name="change" maxlength="500" placeholder="Una frase basta"></textarea>
+      </div>
+
+      <div id="error" class="error" role="alert" hidden></div>
+      <button type="submit" class="send">Enviar a Jared</button>
+    </div>
+  </form>
+
+  <div id="done" class="card thanks" hidden>
+    <p class="q">¡Gracias, grumete! ⚓</p>
+    <p id="saved" class="status"></p>
+    <pre id="summary" class="summary"></pre>
+    <a id="mail" class="send" style="display:flex;align-items:center;justify-content:center;text-decoration:none" href="#" hidden>Enviar por correo</a>
+    <button type="button" id="copy" class="ghost">Copiar mis respuestas</button>
+    <p id="copied" class="status" hidden>Copiado. Pégalo en un mensaje a Jared.</p>
+    <button type="button" id="again" class="ghost">Cambiar algo</button>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  { id: "fun", q: "¿Te ha parecido divertido?", low: "Nada", high: "Muchísimo" },
+  { id: "rules", q: "¿Entendiste cómo se juega?", hint: "Con el tutorial y las reglas del juego", low: "Me perdí", high: "Clarísimo" },
+  { id: "decisions", q: "¿Sentías que tus decisiones importaban?", hint: "Quién baja, cuándo volver al barco, qué comprar…", low: "Solo tiraba dados", high: "Mucho" },
+  { id: "difficulty", q: "¿Qué tal la dificultad?", low: "Muy fácil", high: "Muy difícil", mid: "3 = justa" },
+  { id: "look", q: "¿Qué tal se ve y se oye?", hint: "Dibujos, dados, sonido", low: "Flojo", high: "Precioso" },
+  { id: "again", q: "¿Te apetece jugar otra partida?", low: "Para nada", high: "Ya mismo" },
+];
+const ISLANDS = { id: "reached", q: "¿Hasta dónde llegaste en tu mejor travesía?", options: ["Isla 1", "Isla 2", "Isla 3", "Isla 4", "Isla 5", "Isla 6", "Las 6", "Mar abierto"] };
+const BUY = { id: "buy", q: "¿Pagarías unos 4 € por el juego completo?", options: ["Sí", "Quizás", "No"] };
+
+const qBox = document.getElementById("questions");
+function scaleCard(item) {
+  const card = document.createElement("div");
+  card.className = "card"; card.id = "card-" + item.id;
+  card.setAttribute("role", "radiogroup"); card.setAttribute("aria-labelledby", "t-" + item.id);
+  const legend = `<p class="q" id="t-${item.id}">${item.q}</p>`;
+  const hint = item.hint ? `<p class="hint">${item.hint}</p>` : "";
+  const buttons = [1, 2, 3, 4, 5].map(n =>
+    `<input type="radio" id="${item.id}-${n}" name="${item.id}" value="${n}"><label for="${item.id}-${n}">${n}</label>`).join("");
+  card.innerHTML = `${legend}${hint}<div class="scale">${buttons}</div>
+    <div class="ends"><span>1 · ${item.low}</span>${item.mid ? `<span>${item.mid}</span>` : ""}<span>5 · ${item.high}</span></div>`;
+  return card;
+}
+function choiceCard(item, cls) {
+  const card = document.createElement("div");
+  card.className = "card"; card.id = "card-" + item.id;
+  card.setAttribute("role", "radiogroup"); card.setAttribute("aria-labelledby", "t-" + item.id);
+  const buttons = item.options.map((o, i) =>
+    `<input type="radio" id="${item.id}-${i}" name="${item.id}" value="${o}"><label for="${item.id}-${i}">${o}</label>`).join("");
+  card.innerHTML = `<p class="q" id="t-${item.id}">${item.q}</p><div class="choices ${cls || ""}">${buttons}</div>`;
+  return card;
+}
+QUESTIONS.slice(0, 4).forEach(q => qBox.append(scaleCard(q)));
+qBox.append(choiceCard(ISLANDS, "islands"));
+QUESTIONS.slice(4).forEach(q => qBox.append(scaleCard(q)));
+qBox.append(choiceCard(BUY));
+
+const form = document.getElementById("form");
+const REQUIRED = [...QUESTIONS.map(q => q.id), ISLANDS.id, BUY.id];
+const DRAFT = "lastloot-opinion-draft";
+
+function collect() {
+  const data = { name: form.name.value.trim(), best: form.best.value.trim(), change: form.change.value.trim() };
+  for (const id of REQUIRED) {
+    const v = form.querySelector(`input[name="${id}"]:checked`)?.value;
+    data[id] = v == null ? null : (/^\d$/.test(v) ? Number(v) : v);
+  }
+  return data;
+}
+function restore(data) {
+  if (!data) return;
+  for (const k of ["name", "best", "change"]) if (data[k]) form[k].value = data[k];
+  for (const id of REQUIRED) {
+    if (data[id] == null) continue;
+    const el = [...form.querySelectorAll(`input[name="${id}"]`)].find(i => i.value === String(data[id]));
+    if (el) el.checked = true;
+  }
+}
+try { restore(JSON.parse(localStorage.getItem(DRAFT) || "null")); } catch {}
+form.addEventListener("input", () => { try { localStorage.setItem(DRAFT, JSON.stringify(collect())); } catch {} });
+
+function summaryText(d) {
+  const lines = [`Last Loot · opinión${d.name ? " de " + d.name : ""}`];
+  for (const q of QUESTIONS) lines.push(`${q.q} ${d[q.id]}/5`);
+  lines.push(`${ISLANDS.q} ${d.reached}`);
+  lines.push(`${BUY.q} ${d.buy}`);
+  if (d.best) lines.push(`Lo mejor: ${d.best}`);
+  if (d.change) lines.push(`Cambiaría: ${d.change}`);
+  return lines.join("\n");
+}
+
+// ===== Configuración =====
+// Correo al que llegan las respuestas.
+const EMAIL = "jrd.perez88@gmail.com";
+// ID de tu formulario de Formspree (lo que va tras https://formspree.io/f/). Vacío: no se usa y el
+// envío abre el correo del móvil con las respuestas ya escritas.
+const FORMSPREE_ID = "";
+// ==========================
+
+async function save(d) {
+  if (!FORMSPREE_ID) return false;
+  try {
+    const r = await fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ _subject: "Last Loot · opinión" + (d.name ? " de " + d.name : ""), mensaje: summaryText(d), ...d }),
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
+function mailLink(d) {
+  const subject = "Last Loot · opinión" + (d.name ? " de " + d.name : "");
+  return "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(summaryText(d));
+}
+
+const err = document.getElementById("error");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const d = collect();
+  document.querySelectorAll(".missing").forEach(c => c.classList.remove("missing"));
+  const missing = REQUIRED.filter(id => d[id] == null);
+  if (missing.length) {
+    missing.forEach(id => document.getElementById("card-" + id)?.classList.add("missing"));
+    err.textContent = missing.length === 1 ? "Te falta 1 pregunta por marcar (en rojo)." : `Te faltan ${missing.length} preguntas por marcar (en rojo).`;
+    err.hidden = false;
+    document.getElementById("card-" + missing[0])?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  err.hidden = true;
+  const button = form.querySelector(".send");
+  button.disabled = true; button.textContent = "Enviando…";
+  const ok = await save(d);
+  button.disabled = false; button.textContent = "Enviar a Jared";
+  document.getElementById("summary").textContent = summaryText(d);
+  document.getElementById("saved").textContent = ok
+    ? "Tus respuestas ya le han llegado a Jared."
+    : "Último paso: toca «Enviar por correo» y luego Enviar en tu app de correo. Si no se abre, copia tus respuestas y mándaselas a Jared por WhatsApp.";
+  const mail = document.getElementById("mail");
+  mail.href = mailLink(d);
+  mail.hidden = ok;
+  if (ok) { try { localStorage.removeItem(DRAFT); } catch {} }
+  form.hidden = true;
+  document.getElementById("done").hidden = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById("copy").addEventListener("click", () => {
+  const text = document.getElementById("summary").textContent;
+  const shown = () => { document.getElementById("copied").hidden = false; };
+  const fallback = () => {
+    const range = document.createRange(); range.selectNodeContents(document.getElementById("summary"));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    document.getElementById("copied").textContent = "Texto seleccionado: cópialo y pégalo en un mensaje a Jared.";
+    shown();
+  };
+  try { navigator.clipboard.writeText(text).then(shown, fallback); } catch { fallback(); }
+});
+document.getElementById("again").addEventListener("click", () => {
+  document.getElementById("done").hidden = true;
+  form.hidden = false;
+});
+
+</script>
+
+</body>
+</html>
